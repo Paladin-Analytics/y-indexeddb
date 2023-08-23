@@ -1,6 +1,6 @@
 {
   "name": "y-indexeddb",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "IndexedDB database adapter for Yjs",
   "type": "module",
   "main": "./dist/y-indexeddb.cjs",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yjs/y-indexeddb.git"
+    "url": "git+https://github.com/Paladin-Analytics/y-indexeddb.git"
   },
   "keywords": [
     "Yjs",
@@ -47,7 +47,7 @@
   "author": "Kevin Jahns <kevin.jahns@protonmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yjs/y-indexeddb/issues"
+    "url": "https://github.com/Paladin-Analytics/y-indexeddb/pulls"
   },
   "homepage": "https://yjs.dev",
   "dependencies": {
