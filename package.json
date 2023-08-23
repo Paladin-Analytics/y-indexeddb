@@ -1,6 +1,6 @@
 {
   "name": "y-indexeddb",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "IndexedDB database adapter for Yjs",
   "type": "module",
   "main": "./dist/y-indexeddb.cjs",
@@ -15,6 +15,7 @@
     "clean": "rm -rf dist",
     "test": "npm run lint",
     "build": "rollup -c && tsc",
+    "prepare": "npm run build",
     "release": "standard-version && git push --follow-tags && npm publish",
     "lint": "markdownlint README.md && standard && tsc",
     "preversion": "npm run clean && npm run lint && npm run build",
