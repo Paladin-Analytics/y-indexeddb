@@ -48,6 +48,76 @@ export const storeState = (idbPersistence, forceStore = true) =>
  */
 export const clearDocument = name => idb.deleteDB(name)
 
+/** Additional for promise based sync */
+export class IDBInstace {
+  /**
+   * @param {string} dbName 
+   */
+  constructor(dbName){
+    /**
+     * @type {IDBDatabase | null} 
+     */
+    this._db = null;
+    this._dbref = 0;
+    this._dbsize = 0;
+    this._name = dbName;
+  }
+
+  async initializeConnection() {
+    if(this._db) throw new Error("DB already initialized");
+    const db = await idb.openDB(this._name, db => {
+      idb.createStores(db, [
+        ['updates', { autoIncrement: true }],
+        ['custom']
+      ])
+    });
+    this._db = db;
+  }
+
+  /**
+   * @param {Y.Doc} doc 
+   */
+  async syncUpdatesFromDBToDoc(doc) {
+    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
+    const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this._db), [updatesStoreName]);
+    const updates = await idb.getAll(updatesStore, idb.createIDBKeyRangeLowerBound(this._dbref, false));
+    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(doc));
+    Y.transact(doc, () => {
+      updates.forEach(val => Y.applyUpdate(doc, val))
+    }, this._db, false);
+    const lastKey = await idb.getLastKey(updatesStore);
+    this._dbref = lastKey + 1;
+    const count = await idb.count(updatesStore);
+    this._dbsize = count;
+    return updatesStore;
+  }
+
+  /**
+   * @param {Uint8Array} update 
+   */
+  async updateDB(update){
+    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
+    const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this._db), [updatesStoreName])
+    await idb.addAutoKey(updatesStore, update)
+    return updatesStore;
+  }
+
+  closeConnection(){
+    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
+    this._db.close()
+  }
+}
+
+/** Delete database during logout */
+
+/**
+ * @param {string} dbName
+ */
+export const deleteYChapterDB = async(dbName) => {
+  await idb.deleteDB(dbName)
+}
+
+
 /**
  * @extends Observable<string>
  */
