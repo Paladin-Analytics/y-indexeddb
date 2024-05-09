@@ -1,5 +1,5 @@
 {
-  "name": "@paladin-analytics/y-indexeddb",
+  "name": "@surge-global-engineering/y-indexeddb",
   "version": "1.0.10",
   "description": "IndexedDB database adapter for Yjs",
   "type": "module",
@@ -30,7 +30,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Paladin-Analytics/y-indexeddb.git"
+    "url": "git+https://github.com/SURGE-GLOBAL-ENGINEERING/y-indexeddb.git"
   },
   "keywords": [
     "Yjs",
@@ -43,7 +43,7 @@
   "author": "Kevin Jahns <kevin.jahns@protonmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Paladin-Analytics/y-indexeddb/pulls"
+    "url": "https://github.com/SURGE-GLOBAL-ENGINEERING/y-indexeddb/pulls"
   },
   "homepage": "https://yjs.dev",
   "dependencies": {
