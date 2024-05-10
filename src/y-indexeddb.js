@@ -2,6 +2,7 @@ import * as Y from 'yjs'
 import * as idb from 'lib0/indexeddb'
 import * as promise from 'lib0/promise'
 import { Observable } from 'lib0/observable'
+import { yTextToSlateElement } from "@slate-yjs/core";
 
 const customStoreName = 'custom'
 const updatesStoreName = 'updates'
@@ -18,9 +19,22 @@ export const fetchUpdates = (idbPersistence, beforeApplyUpdatesCallback = () => 
   return idb.getAll(updatesStore, idb.createIDBKeyRangeLowerBound(idbPersistence._dbref, false)).then(updates => {
     if (!idbPersistence._destroyed) {
       beforeApplyUpdatesCallback(updatesStore)
+      const tempYdoc = new Y.Doc();
       Y.transact(idbPersistence.doc, () => {
-        updates.forEach(val => Y.applyUpdate(idbPersistence.doc, val))
+        updates.forEach(val => {
+          Y.applyUpdate(idbPersistence.doc, val);
+          Y.applyUpdate(tempYdoc, val);
+        })
       }, idbPersistence, false)
+      // const tempDocStateAsUpdate = Y.encodeStateAsUpdate(tempYdoc);
+      // Y.applyUpdate(idbPersistence.doc, tempDocStateAsUpdate);
+      // const contentShared = idbPersistence.doc.getXmlFragment('content');
+      // @ts-ignore
+      const sharedTypeTemp = tempYdoc.get("content", Y.XmlText);
+      //@ts-ignore
+      const tempChapterBodyAsNodes = yTextToSlateElement(sharedTypeTemp).children;
+      console.log("EDITOR PLATE BODY: IDB TEMP", idbPersistence.name, tempChapterBodyAsNodes);
+      tempYdoc.destroy();
       afterApplyUpdatesCallback(updatesStore)
     }
   })
@@ -44,11 +58,66 @@ export const storeState = (idbPersistence, forceStore = true) =>
     })
 
 /**
+ * Same as fetchUpdates above, but uses async/await and changes for promise based ydoc sync
+ * @param {IDBInstace} idbInstance
+ * @param {Y.Doc} doc
+ * @returns {Promise<IDBObjectStore>}
+ */
+export const asyncFetchUpdates = async (idbInstance, doc) => {
+  /**
+   * Retrieve a list of object stores in the scope (readonly) of the given transaction 
+   * Returns the 'updates' store for the current idb instance with readonly scope
+   */
+  const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (idbInstance.db), [updatesStoreName]) // , 'readonly')
+  /**
+   * idb.getAll() gets all the objects (updates) from the 'updates' store for the given range of keys (all the keys starting from the lower bound)
+   * 
+   * idb.createIDBKeyRangeLowerBound(idbPersistence._dbref, false) returns the entire range of IDB keys starting from 
+   * the lower bound (idbPersistence._dbref) with no upper bound
+   */
+  const updates = await idb.getAll(updatesStore, idb.createIDBKeyRangeLowerBound(idbInstance._dbref, false))
+  /** Apply the retrieved updates to the ydoc */
+  Y.transact(doc, () => {
+    updates.forEach(val => Y.applyUpdate(doc, val))
+  }, idbInstance, false)
+  /** set lower bound as the last key? */
+  const lastKey = await idb.getLastKey(updatesStore)
+  idbInstance._dbref = lastKey + 1
+  /** get the number of objects (update records) and set it as _dbsize */
+  const record_count = await idb.count(updatesStore)
+  idbInstance._dbsize = record_count
+  /** returns the 'updates' store(table) */
+  return updatesStore
+}
+
+/**
+ * Same as storeState above, but uses async/await and changes for promise based ydoc sync
+ * @param {IDBInstace} idbInstance
+ * @param {boolean} forceStore
+ */
+export const asyncStoreState = async (idbInstance, forceStore = true) => {
+  const tempYDoc = new Y.Doc();
+  const updatesStore = await asyncFetchUpdates(idbInstance, tempYDoc);
+  if(forceStore || idbInstance._dbsize >= PREFERRED_TRIM_SIZE){
+    /**
+     * save entire document state as a single update under a auto generated key, 
+     * delete all the other records upto the newly generated key
+     * update new db size 
+     */
+    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(tempYDoc));
+    await idb.del(updatesStore, idb.createIDBKeyRangeUpperBound(idbInstance._dbref, true));
+    const record_count = await idb.count(updatesStore);
+    idbInstance._dbsize = record_count;
+  }
+  tempYDoc.destroy();
+}
+
+/**
  * @param {string} name
  */
 export const clearDocument = name => idb.deleteDB(name)
 
-/** Additional for promise based sync */
+/** Additional interfaces for promise based document sync */
 export class IDBInstace {
   /**
    * @param {string} dbName 
@@ -57,54 +126,54 @@ export class IDBInstace {
     /**
      * @type {IDBDatabase | null} 
      */
-    this._db = null;
+    this.db = null;
+    this.name = dbName;
     this._dbref = 0;
     this._dbsize = 0;
-    this._name = dbName;
   }
 
   async initializeConnection() {
-    if(this._db) throw new Error("DB already initialized");
-    const db = await idb.openDB(this._name, db => {
-      idb.createStores(db, [
+    if(this.db) throw new Error("y-indexeddb error: Database already initialized");
+    const database = await idb.openDB(this.name, database => {
+      idb.createStores(database, [
         ['updates', { autoIncrement: true }],
         ['custom']
       ])
     });
-    this._db = db;
+    this.db = database;
   }
 
   /**
-   * @param {Y.Doc} doc 
+   * Fetch the entire state of the ydoc as a single update
+   * @returns The entire state of the document as a single update
    */
-  async syncUpdatesFromDBToDoc(doc) {
-    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
-    const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this._db), [updatesStoreName]);
-    const updates = await idb.getAll(updatesStore, idb.createIDBKeyRangeLowerBound(this._dbref, false));
-    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(doc));
-    Y.transact(doc, () => {
-      updates.forEach(val => Y.applyUpdate(doc, val))
-    }, this._db, false);
-    const lastKey = await idb.getLastKey(updatesStore);
-    this._dbref = lastKey + 1;
-    const count = await idb.count(updatesStore);
-    this._dbsize = count;
-    return updatesStore;
+  async getDocumentUpdates() {
+    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    const tempYDoc = new Y.Doc();
+    await asyncFetchUpdates(this, tempYDoc);
+    const encodedDocState = Y.encodeStateAsUpdate(tempYDoc);
+    tempYDoc.destroy();
+    return encodedDocState;
   }
 
   /**
-   * @param {Uint8Array} update 
+   * Save given ydoc update in IDB
+   * @param {Uint8Array} update
    */
   async updateDB(update){
-    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
-    const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this._db), [updatesStoreName])
+    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this.db), [updatesStoreName])
     await idb.addAutoKey(updatesStore, update)
+    if (++this._dbsize >= PREFERRED_TRIM_SIZE) {
+      /** No need to debounce this as in the original function since this method is manually invoked, not on ydoc on update */
+      await asyncStoreState(this, false);
+    }
     return updatesStore;
   }
 
   closeConnection(){
-    if(!this._db) throw new Error("DB needs to be initialized before calling this method");
-    this._db.close()
+    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    this.db.close()
   }
 }
 
@@ -149,6 +218,9 @@ export class IndexeddbPersistence extends Observable {
      */
     this.whenSynced = promise.create(resolve => this.on('synced', () => resolve(this)))
 
+    /**
+     * This method gets invoked when when IDBPersistence object is initiated
+     */
     this._db.then(db => {
       this.db = db
       /**
@@ -159,6 +231,7 @@ export class IndexeddbPersistence extends Observable {
         if (this._destroyed) return this
         this.synced = true
         this.emit('synced', [this])
+        console.log("IDB: doc synced");
       }
       fetchUpdates(this, beforeApplyUpdatesCallback, afterApplyUpdatesCallback)
     })

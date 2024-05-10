@@ -67,6 +67,21 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@slate-yjs/core@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@slate-yjs/core/-/core-1.0.2.tgz#1369fad59bef3a70ee9c14f3dd9c0bd01a542996"
+  integrity sha512-X0hLFJbQu9c1ItWBaNuEn0pqcXYK76KCp8C4Gvy/VaTQVMo1VgAb2WiiJ0Je/AyuIYEPPSTNVOcyrGHwgA7e6Q==
+  dependencies:
+    y-protocols "^1.0.5"
+
+"@surge-global-engineering/y-protocols@1.0.6":
+  name "@paladin-analytics/y-protocols"
+  version "1.0.6"
+  resolved "https://npm.pkg.github.com/download/@SURGE-GLOBAL-ENGINEERING/y-protocols/1.0.6/a5b5ec6093c6b134935e68bb2df9e9065a863481#a5b5ec6093c6b134935e68bb2df9e9065a863481"
+  integrity sha512-I22HDaeGYDxzXdk4T4gud+Av5fTcfsZbbk2grxrxRPgb7MKEihD1E4LjSkPQCXWH+o5UnEhgZGIEogim/Y+p4w==
+  dependencies:
+    lib0 "^0.2.42"
+
 "@types/estree@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.1.tgz#aa22750962f3bf0e79d753d3cc067f010c95f194"
@@ -1830,6 +1845,13 @@ lib0@^0.2.42, lib0@^0.2.74:
   dependencies:
     isomorphic.js "^0.2.4"
 
+lib0@^0.2.85:
+  version "0.2.93"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.93.tgz#95487c2a97657313cb1d91fbcf9f6d64b7fcd062"
+  integrity sha512-M5IKsiFJYulS+8Eal8f+zAqf5ckm1vffW0fFDxfgxJ+uiVopvDdd3PxJmz0GsVi3YNO7QCFSq0nAsiDmNhLj9Q==
+  dependencies:
+    isomorphic.js "^0.2.4"
+
 lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
@@ -3210,12 +3232,12 @@ xtend@^4.0.1, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-y-protocols@^1.0.1:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/y-protocols/-/y-protocols-1.0.5.tgz#91d574250060b29fcac8f8eb5e276fbad594245e"
-  integrity sha512-Wil92b7cGk712lRHDqS4T90IczF6RkcvCwAD0A2OPg+adKmOe+nOiT/N2hvpQIWS3zfjmtL4CPaH5sIW1Hkm/A==
+y-protocols@^1.0.5:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/y-protocols/-/y-protocols-1.0.6.tgz#66dad8a95752623443e8e28c0e923682d2c0d495"
+  integrity sha512-vHRF2L6iT3rwj1jub/K5tYcTT/mEYDUppgNPXwp8fmLpui9f7Yeq3OEtTLVF012j39QnV+KEQpNqoN7CWU7Y9Q==
   dependencies:
-    lib0 "^0.2.42"
+    lib0 "^0.2.85"
 
 y18n@^5.0.5:
   version "5.0.8"
@@ -3250,7 +3272,7 @@ yargs@^16.0.0, yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yjs@^13.4.7:
+yjs@13.6.7:
   version "13.6.7"
   resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.7.tgz#f1176c37f65eb566cf390bd813e2099d598795f4"
   integrity sha512-mCZTh4kjvUS2DnaktsYN6wLH3WZCJBLqrTdkWh1bIDpA/sB/GNFaLA/dyVJj2Hc7KwONuuoC/vWe9bwBBosZLQ==
