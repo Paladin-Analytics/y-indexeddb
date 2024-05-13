@@ -3,7 +3,7 @@
   "version": "1.0.11",
   "description": "IndexedDB database adapter for Yjs",
   "type": "module",
-  "main": "./dist/y-indexeddb.cjs",
+  "main": "./dist/y-indexeddb.mjs",
   "module": "./src/y-indexeddb.js",
   "types": "./dist/src/y-indexeddb.d.ts",
   "sideEffects": false,
@@ -47,7 +47,6 @@
   },
   "homepage": "https://yjs.dev",
   "dependencies": {
-    "@slate-yjs/core": "1.0.2",
     "lib0": "^0.2.74"
   },
   "devDependencies": {
@@ -61,7 +60,7 @@
     "standard": "^11.0.1",
     "standard-version": "^9.5.0",
     "typescript": "^5.0.4",
-    "@surge-global-engineering/y-protocols": "1.0.6",
+    "@surge-global-engineering/y-protocols": "1.0.10",
     "yjs": "13.6.7"
   },
   "peerDependencies": {

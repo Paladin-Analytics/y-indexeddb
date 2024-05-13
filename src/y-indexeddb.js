@@ -2,7 +2,7 @@ import * as Y from 'yjs'
 import * as idb from 'lib0/indexeddb'
 import * as promise from 'lib0/promise'
 import { Observable } from 'lib0/observable'
-import { yTextToSlateElement } from "@slate-yjs/core";
+// import { yTextToSlateElement } from "@slate-yjs/core";
 
 const customStoreName = 'custom'
 const updatesStoreName = 'updates'
@@ -30,10 +30,10 @@ export const fetchUpdates = (idbPersistence, beforeApplyUpdatesCallback = () => 
       // Y.applyUpdate(idbPersistence.doc, tempDocStateAsUpdate);
       // const contentShared = idbPersistence.doc.getXmlFragment('content');
       // @ts-ignore
-      const sharedTypeTemp = tempYdoc.get("content", Y.XmlText);
+      // const sharedTypeTemp = tempYdoc.get("content", Y.XmlText);
       //@ts-ignore
-      const tempChapterBodyAsNodes = yTextToSlateElement(sharedTypeTemp).children;
-      console.log("EDITOR PLATE BODY: IDB TEMP", idbPersistence.name, tempChapterBodyAsNodes);
+      // const tempChapterBodyAsNodes = yTextToSlateElement(sharedTypeTemp).children;
+      // console.log("EDITOR PLATE BODY: IDB TEMP", idbPersistence.name, tempChapterBodyAsNodes);
       tempYdoc.destroy();
       afterApplyUpdatesCallback(updatesStore)
     }
