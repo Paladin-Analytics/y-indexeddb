@@ -84,17 +84,15 @@ export const asyncFetchUpdates = async (idbInstance, doc) => {
 export const asyncStoreState = async (idbInstance, forceStore = true) => {
   const tempYDoc = new Y.Doc();
   const updatesStore = await asyncFetchUpdates(idbInstance, tempYDoc);
-  if(forceStore || idbInstance._dbsize >= PREFERRED_TRIM_SIZE){
-    /**
-     * save entire document state as a single update under a auto generated key, 
-     * delete all the other records upto the newly generated key
-     * update new db size 
-     */
-    await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(tempYDoc));
-    await idb.del(updatesStore, idb.createIDBKeyRangeUpperBound(idbInstance._dbref, true));
-    const record_count = await idb.count(updatesStore);
-    idbInstance._dbsize = record_count;
-  }
+  /**
+   * save entire document state as a single update under a auto generated key, 
+   * delete all the other records upto the newly generated key
+   * update new db size 
+   */
+  await idb.addAutoKey(updatesStore, Y.encodeStateAsUpdate(tempYDoc));
+  await idb.del(updatesStore, idb.createIDBKeyRangeUpperBound(idbInstance._dbref, true));
+  const record_count = await idb.count(updatesStore);
+  idbInstance._dbsize = record_count;
   tempYDoc.destroy();
 }
 
