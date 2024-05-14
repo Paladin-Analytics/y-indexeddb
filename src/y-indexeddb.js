@@ -134,7 +134,7 @@ export class IDBInstace {
    * @param {Y.Doc} doc
    */
   async syncUpdatesFromDBToDoc(doc) {
-    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    if(!this.db) throw new Error("y-indexeddb error: DB needs to be initialized before calling this method");
     await asyncFetchUpdates(this, doc);
   }
 
@@ -143,7 +143,7 @@ export class IDBInstace {
    * @param {Uint8Array} update
    */
   async updateDB(update){
-    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    if(!this.db) throw new Error("y-indexeddb error: DB needs to be initialized before calling this method");
     const [updatesStore] = idb.transact(/** @type {IDBDatabase} */ (this.db), [updatesStoreName])
     await idb.addAutoKey(updatesStore, update)
     if (++this._dbsize >= PREFERRED_TRIM_SIZE) {
@@ -154,7 +154,7 @@ export class IDBInstace {
   }
 
   closeConnection(){
-    if(!this.db) throw new Error("DB needs to be initialized before calling this method");
+    if(!this.db) throw new Error("y-indexeddb error: DB needs to be initialized before calling this method");
     this.db.close()
   }
 }
