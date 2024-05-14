@@ -16,8 +16,8 @@ export default [{
   input: './src/y-indexeddb.js',
   output: {
     name: 'Y',
-    file: 'dist/y-indexeddb.cjs',
-    format: 'cjs',
+    file: 'dist/y-indexeddb.mjs',
+    format: 'esm',
     sourcemap: true
   },
   external: id => /^(lib0|yjs)\//.test(id)

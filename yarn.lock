@@ -67,6 +67,13 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@surge-global-engineering/y-protocols@1.0.10":
+  version "1.0.10"
+  resolved "https://npm.pkg.github.com/download/@SURGE-GLOBAL-ENGINEERING/y-protocols/1.0.10/e35f49dee145adb4a2f86d085052d80d0e0bc236#e35f49dee145adb4a2f86d085052d80d0e0bc236"
+  integrity sha512-iucd8YO8l06QddvyzvLxaHduUlZhIJprwTqdXAtwaNfhJNZm4t394aTwvrBm5Zd23zVLt00uXrNVEKuZ7Hu7rA==
+  dependencies:
+    lib0 "^0.2.42"
+
 "@types/estree@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.1.tgz#aa22750962f3bf0e79d753d3cc067f010c95f194"
@@ -3210,13 +3217,6 @@ xtend@^4.0.1, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
-y-protocols@^1.0.1:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/y-protocols/-/y-protocols-1.0.5.tgz#91d574250060b29fcac8f8eb5e276fbad594245e"
-  integrity sha512-Wil92b7cGk712lRHDqS4T90IczF6RkcvCwAD0A2OPg+adKmOe+nOiT/N2hvpQIWS3zfjmtL4CPaH5sIW1Hkm/A==
-  dependencies:
-    lib0 "^0.2.42"
-
 y18n@^5.0.5:
   version "5.0.8"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.8.tgz#7f4934d0f7ca8c56f95314939ddcd2dd91ce1d55"
@@ -3250,7 +3250,7 @@ yargs@^16.0.0, yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yjs@^13.4.7:
+yjs@13.6.7:
   version "13.6.7"
   resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.7.tgz#f1176c37f65eb566cf390bd813e2099d598795f4"
   integrity sha512-mCZTh4kjvUS2DnaktsYN6wLH3WZCJBLqrTdkWh1bIDpA/sB/GNFaLA/dyVJj2Hc7KwONuuoC/vWe9bwBBosZLQ==
